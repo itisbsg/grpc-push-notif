@@ -33,14 +33,15 @@ func newServer() *server {
 }
 
 func (s *server) Register(ctx context.Context, req *pb.RegistrationRequest) (*pb.RegistrationResponse, error) {
-	log.Printf("Received a Registration Request from %s", req.GetClientName())
+	log.Printf("Received a Registration Request (%s)", req.GetClientName())
 	return &pb.RegistrationResponse{ClientName: req.GetClientName(), ServerName: s.name}, nil
 }
 
 func (s *server) Alert(topic *pb.Topic, stream pb.PushNotif_AlertServer) error {
-	log.Printf("Received a Alert request for topic %s from client %s", topic.GetType().String(), topic.GetClientName())
+	log.Printf("Received a Subscription Request(%s, %s)", topic.GetClientName(), topic.GetType().String())
 	s.alertStrm[topic.GetClientName()] = stream
-	log.Printf("Client %s will now recieve Alerts", topic.GetClientName())
+	//log.Printf("Client %s will now recieve Alerts", topic.GetClientName())
+    log.Printf("")
 
 	// long lived stream
 	for {
@@ -59,7 +60,7 @@ func (s *server) Subscribe(stream pb.PushNotif_SubscribeServer) error {
 			return err
 		}
 
-		log.Printf("Received a subscribe request for topic %s from client %v", in.GetType().String(), in.GetClientName())
+		log.Printf("Received a Subscription Request (%s, %s)", in.GetClientName(), in.GetType().String())
 		_, ok := s.subStrm[in.GetClientName()+":"+in.GetType().String()]
 		if !ok {
 			s.subStrm[in.GetClientName()+":"+in.GetType().String()] = stream
@@ -75,10 +76,10 @@ func (s *server) pushUpdates() {
 	var str string
 	var i uint32
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	for {
-		fmt.Println(s.alertStrm)
+		//fmt.Println(s.alertStrm)
 		for k, v := range s.alertStrm {
 			fmt.Printf("Enter new Alert for Client(%v): ", k)
 			fmt.Scan(&str)

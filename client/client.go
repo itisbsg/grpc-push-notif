@@ -28,13 +28,13 @@ const (
 
 // register ...
 func register(client pb.PushNotifClient) error {
-	log.Printf("Calling Register RPC")
+	//log.Printf("Calling Register RPC")
 
 	resp, err := client.Register(context.Background(), &pb.RegistrationRequest{ClientName: name})
 	if err != nil {
 		log.Fatalf("Register failed %v", err)
 	}
-	log.Print(resp, err)
+    log.Println("Registration Resp: ", resp, err)
 	// cookie = resp.ClientCookie
 	// log.Printf("Reg Response %s, %s, %v", resp.ClientName, resp.ServerName, resp.ClientCookie)
 
@@ -65,18 +65,13 @@ func subscribeToAlerts(client pb.PushNotifClient) {
 // subscribeToModeChanges ...
 func subscribeToModeChanges(c chan pb.TopicType) {
 	log.Println("Subscribing to Mode changes")
-
 	c <- pb.TopicType_MODE
-
-	fmt.Println("done queuing it to channel c")
 }
 
 // subscribeToModeChanges ...
 func subscribeToTempChanges(c chan pb.TopicType) {
 	log.Println("Subscribing to Temp changes")
-
 	c <- pb.TopicType_TEMP
-
 }
 
 // recvNotification ...
@@ -103,7 +98,7 @@ func subscribe(client pb.PushNotifClient, c chan pb.TopicType) {
 	go recvNotification(stream)
 
 	for t := range c {
-		log.Printf("sending subscibe for topic %s", t.String())
+		//log.Printf("sending subscibe for topic %s", t.String())
 		if err := stream.Send(&pb.Topic{ClientName: name, Type: t}); err != nil {
 			log.Fatalf("couldnt send %s", t.String())
 		}
