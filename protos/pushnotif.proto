@@ -1,0 +1,55 @@
+//
+// pushnotif.proto
+// 
+// Example that implements push notification from grpc server to client
+//
+syntax = "proto3";
+
+service pushNotif {
+	rpc Register (RegistrationRequest) returns (RegistrationResponse);
+	rpc Alert (Topic) returns (stream Notification);
+	rpc Subscribe (stream Topic) returns (stream Notification);
+}
+
+enum topicType {
+	ALERT = 0;
+	MODE = 1;
+	TEMP = 2;
+}
+
+message Alert {
+	string message = 1; /* Alerts could be.. check for open doors, temp dropping down too quickly */
+}
+
+message Mode {
+	string newMode = 1; /* "heat" or "cold" */
+}
+
+message Temp {
+	uint32 newTemp = 1; /* set the temp */
+}
+
+message RegistrationRequest {
+	string clientName = 1;
+}
+
+message RegistrationResponse {
+	string clientName = 1;
+	string serverName = 2;
+	/* uint64 clientCookie = 3; Cookie assigned by the server which is used in further communications */
+}
+
+message Topic {
+	string clientName = 1;
+	/* uint64 clientCookie = 1; */
+	topicType type = 2;
+}
+
+message Notification {
+	string clientName = 1;
+	string serverName = 2;
+	topicType type = 3;
+	Alert a = 6;
+	Mode m = 4;
+	Temp t = 5;
+}
