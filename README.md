@@ -3,4 +3,4 @@ There are primarily 4 types of gRPC apis, req/resp, req/streaming-resp, streamin
 
 The implementation here emulates a very simple, rudimentary smart thermostate which connects to its server, subscribes to a bunch notifications and listens to them. The screenshot below provides the overview, fairly simple.
 
-[Screenshot](screenshot.gif)
+![Screenshot](screenshot.gif)
